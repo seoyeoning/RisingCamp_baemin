@@ -11,6 +11,20 @@ public class ValidationRegex {
         Matcher matcher = pattern.matcher(target);
         return matcher.find();
     }
+    // 전화번호 형식 체크
+    public static boolean isRegexPhoneNum(String target) {
+        String regex = "\\d{3}-\\d{4}-\\d{4}";
+        Pattern pattern = Pattern.compile(regex,Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(target);
+        return matcher.find();
+    }
+    // 생년월일 형식 체크
+    /*public static boolean isRegexBirth(Integer target) {
+        String regex = "[0-9]{6}";
+        Pattern pattern = Pattern.compile(regex,Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(target);
+        return matcher.find();
+    }*/
 
     // 날짜 형식, 전화 번호 형식 등 여러 Regex 인터넷에 검색하면 나옴.
 }

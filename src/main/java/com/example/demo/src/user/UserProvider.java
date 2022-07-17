@@ -44,24 +44,77 @@ public class UserProvider {
         User user = userDao.getPwd(postLoginReq);
         String password;
         try {
-            password = new AES128(Secret.USER_INFO_PASSWORD_KEY).decrypt(user.getPassword()); // 암호화
+            password = new AES128(Secret.USER_INFO_PASSWORD_KEY).decrypt(user.getPassWord()); // 암호화
             // 회원가입할 때 비밀번호가 암호화되어 저장되었기 떄문에 로그인을 할때도 암호화된 값끼리 비교를 해야합니다.
         } catch (Exception ignored) {
             throw new BaseException(PASSWORD_DECRYPTION_ERROR);
         }
 
-        if (postLoginReq.getPassword().equals(password)) { //비말번호가 일치한다면 userIdx를 가져온다.
+        if (postLoginReq.getPassWord().equals(password)) { //비말번호가 일치한다면 userIdx를 가져온다.
             int userIdx = userDao.getPwd(postLoginReq).getUserIdx();
-            return new PostLoginRes(userIdx);
-//  *********** 해당 부분은 7주차 - JWT 수업 후 주석해제 및 대체해주세요!  **************** //
-//            String jwt = jwtService.createJwt(userIdx);
-//            return new PostLoginRes(userIdx,jwt);
-//  **************************************************************************
+//            return new PostLoginRes(userIdx);
+//  *********** 해당 부분은 7주차 - JWT 수업 후 주석해제 및 대체해주세요!  ****************
+            String jwt = jwtService.createJwt(userIdx);
+            return new PostLoginRes(userIdx,jwt);
 
         } else { // 비밀번호가 다르다면 에러메세지를 출력한다.
             throw new BaseException(FAILED_TO_LOGIN);
         }
     }
+
+    // 해당 userIdx를 갖는 User의 정보 조회
+    public GetUserRes getUser(int userIdx) throws BaseException {
+        try {
+            GetUserRes getUserRes = userDao.getUser(userIdx);
+            return getUserRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    // 해당 userIdx를 갖는 User의 쿠폰 조회
+    public List<GetUserCouponRes> getUserCoupons(int userIdx) throws BaseException {
+        try{
+            List<GetUserCouponRes> getUserCouponRes = userDao.getUserCoupons(userIdx);
+            return getUserCouponRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    // 특정 회원의 주문 내역 조회
+    public List<GetUserOrdersDPRes> getUserOrdersDP(int userIdx) throws BaseException {
+        try {
+            List<GetUserOrdersDPRes> getUserOrdersDPRes = userDao.getUserOrdersDP(userIdx);
+            return getUserOrdersDPRes;
+
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    // 특정 회원의 장바구니의 메뉴들만 조회
+    public List<GetUserCartMenuDPRes> getUserCartMenuDP(int userIdx) throws BaseException {
+        try {
+            List<GetUserCartMenuDPRes> getUserCartMenuDPRes = userDao.getUserCartMenuDP(userIdx);
+            return getUserCartMenuDPRes;
+
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+    // 특정 회원 장바구니 가격 조회
+    public GetUserCartPriceDPRes getUserCartPriceDP(int userIdx) throws BaseException {
+        try {
+            GetUserCartPriceDPRes getUserCartPriceDPRes = userDao.getUserCartPriceDP(userIdx);
+            return getUserCartPriceDPRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////
+
 
     // 해당 이메일이 이미 User Table에 존재하는지 확인
     public int checkEmail(String email) throws BaseException {
@@ -93,15 +146,5 @@ public class UserProvider {
         }
     }
 
-
-    // 해당 userIdx를 갖는 User의 정보 조회
-    public GetUserRes getUser(int userIdx) throws BaseException {
-        try {
-            GetUserRes getUserRes = userDao.getUser(userIdx);
-            return getUserRes;
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
 
 }

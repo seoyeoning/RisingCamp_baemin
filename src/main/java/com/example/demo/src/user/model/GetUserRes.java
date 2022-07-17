@@ -19,7 +19,7 @@ import lombok.Setter;
  */
 public class GetUserRes {
     private int userIdx;
-    private String nickname;
+    private String nickName;
     private String email;
-    private String password;
+    private String phoneNumber;
 }

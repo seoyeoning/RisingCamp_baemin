@@ -12,5 +12,7 @@ import lombok.*;
  */
 public class PatchUserReq {
     private int userIdx;
-    private String nickname;
+    private String nickName;
+    private String passWord;
+    private String phoneNumber;
 }
